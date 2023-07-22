@@ -1,0 +1,22 @@
+.imagen {
+    width: 420px;
+    height: 520px;
+}
+
+
+input[type="radio"]:before {
+    font-size: 55px;
+}
+
+.favorite {
+    background-color: #ffc107;
+  }
+
+
+  .product .favorite-btn .far.fa-heart {
+    color: #666;
+  }
+  
+  .product .favorite-btn.favorite .far.fa-heart {
+    color: #ff5722;
+  }

@@ -1,0 +1,24 @@
+.titulo {
+    font-size: 3rem;
+    padding: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    background-color: rgb(27, 85, 82);
+}
+
+#collapseOne {
+    transition: height 0.5s ease-in-out;
+}
+
+#collapseTwo {
+    transition: height 0.5s ease-in-out;
+}
+
+#collapseThree {
+    transition: height 0.5s ease-in-out;
+}
+
+#collapseFour {
+    transition: height 0.5s ease-in-out;
+}

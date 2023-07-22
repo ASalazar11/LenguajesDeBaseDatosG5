@@ -1,0 +1,28 @@
+body {
+    background-color: rgb(250, 250, 250);
+}
+
+#orange {
+    background-color: #e66b37;
+    border-color: #e66b37;
+}
+
+#orange:hover {
+    background-color: #b2532b;
+    border-color: #e66b37;
+}
+
+#logo {
+    width: 150px;
+    height: 75px;
+    object-fit: cover;
+    object-position: 50% 50%;
+}
+
+#categories_links {
+    color: white;
+}
+
+#categories_links:hover {
+    color: #e66b37;
+}

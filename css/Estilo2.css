@@ -1,0 +1,35 @@
+
+  .titulo {
+    font-size: 3rem;
+    padding: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    background-color: rgb(57, 102, 100);
+  }
+
+  .top {
+    margin-top: 100px;
+  }
+
+  .imagen {
+    background-image: url('https://jdesblog.s3.amazonaws.com/wp-content/uploads/2022/01/brand-logos-1376x467_2.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 20vh;
+    margin: 0;
+    margin-bottom: 30px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    font-size: 3em;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+
+  body {
+    background-color: bisque;
+  }

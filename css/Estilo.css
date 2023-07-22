@@ -1,0 +1,136 @@
+
+  .titulo {
+    font-size: 3rem;
+    padding: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    background-color: rgb(27, 85, 82);
+  }
+
+  .titulo-t {
+
+    font-size: 3rem;
+    padding: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    background-color: rgb(31, 45, 71);
+  }
+
+/* Navbar */
+.navbar {
+    background-color: #fff;
+    padding: 1rem;
+  }
+  
+  
+  .navbar-toggler-icon {
+    background-color: #333;
+  }
+  
+  /* Hero Section */
+  .hero {
+    background-color: #f8f8f8;
+    padding: 3rem 0;
+  }
+  
+  .hero h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .hero p {
+    font-size: 1.2rem;
+    color: #777;
+    margin-bottom: 1.5rem;
+  }
+  
+  .hero img {
+    max-width: 100%;
+  }
+  
+  /* Destacados Section */
+  .destacados {
+    padding: 3rem 0;
+  }
+  
+  .destacados h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 3rem;
+  }
+  
+  .card {
+    border: none;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-img-top {
+    max-height: 400px;
+    object-fit: cover;
+  }
+  
+  .card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .card-text {
+    font-size: 1rem;
+    color: #777;
+    margin-bottom: 1.5rem;
+  }
+  
+  .btn-primary {
+    background-color: #333;
+    border-color: #333;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .btn-primary:hover {
+    background-color: #fff;
+    color: #333;
+  }
+
+  .video-container {
+    position: relative; /* establece la posición relativa para el contenedor */
+    width: 900px; /* establece el ancho del contenedor */
+    height: 560px; /* establece la altura del contenedor */
+    margin: 0 auto; /* centra el contenedor horizontalmente */
+    border: 2px solid #000; /* añade un borde de 2px de ancho en color negro */
+    border-radius: 10px; /* añade bordes redondeados */
+    box-shadow: 0 0 50px #000; /* añade sombra alrededor del video */
+  }
+  
+  .video-container video {
+    position: absolute; /* establece la posición absoluta para el video dentro del contenedor */
+    top: 50%; /* coloca el borde superior del video en el 50% del contenedor */
+    left: 50%; /* coloca el borde izquierdo del video en el 50% del contenedor */
+    transform: translate(-50%, -50%); /* ajusta el video para centrarlo vertical y horizontalmente */
+    width: 100%; /* establece el ancho del video al 100% del contenedor */
+    height: 100%; /* establece la altura del video al 100% del contenedor */
+    object-fit: cover; /* ajusta el tamaño del video para cubrir el contenedor */
+  }
+
+  .fondo-color {
+    background-color: #5a80e7;
+    margin: 0 auto; /* centra el contenedor horizontalmente */
+    border-radius: 6px; /* añade bordes redondeados */
+    box-shadow: 0 0 50px #2b3ac7;
+  }
+
+
+  
+
+  
+  

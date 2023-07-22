@@ -1,0 +1,6 @@
+{
+    "require": {
+      "oracle/php-sdk": "^3.0"
+    }
+  }
+  
