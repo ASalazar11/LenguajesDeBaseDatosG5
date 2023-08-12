@@ -4,6 +4,7 @@
 <link rel="stylesheet" type="text/css" href="css/pimagen1.css">
 <?php
 require_once 'DAL/products.php';
+require_once 'DAL/cart.php';
 require_once 'DAL/categories.php';
 
 //if filter category_id is not set, get all products
@@ -14,6 +15,16 @@ if (!isset($_GET['category_id'])) {
     $products = getProductsByCategory($category_id);
 }
 $user_id = $_SESSION['user']['USER_ID'];
+
+// $user_id = $_SESSION['user']['user_id'];
+$cart = null;
+
+if (!isset($_SESSION['cart'])) {
+    $cart_id = createCart($user_id);
+} else {
+    $cart_id = $_SESSION['cart'];
+}
+
 
 echo "<div class='container-fluid'>";
 echo "<div class='row'>";
@@ -27,9 +38,9 @@ if (!empty($products)) {
         echo "  <div class='card-body text-center mx-auto'>";
         echo "      <div class='cvp'>";
         echo "          <h5 class='card-title font-weight-bold'>{$row['NAME']}</h5>";
-        echo "      <p class='card-text'>CRC {$row['PRICE']}</p>";
+        echo "      <p class='card-text'>$ {$row['PRICE']}</p>";
         echo "       <a href='single_product.php?id={$row['PRODUCT_ID']}' data-id='{$row['PRODUCT_ID']}' class='btn details px-auto' style='background-color: #42465A; color: white;'>ver detalles</a><br />";
-        echo "        <button class='btn cart px-auto'>AGREGAR EN EL CARRITO</button>";
+        echo "        <button class='btn cart px-auto' data-id='{$row['PRODUCT_ID']}' data-cart_id='$cart_id'>AGREGAR EN EL CARRITO</button>";
         echo "     </div>";
         echo "  </div>";
         echo "  </div>";

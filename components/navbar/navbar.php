@@ -88,7 +88,7 @@
                         </a>
                         <div class="d-flex flex-column ms-2">
                             <span class="qty">Carrito vacio</span>
-                            <span class="price fw-bold">CRC 0.00</span>
+                            <span class="price fw-bold">$ 0.00</span>
                         </div>
                     </div>
                 </div>

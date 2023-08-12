@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
     $('.cart').click(function () {
         var id = $(this).data('id');
@@ -13,43 +12,39 @@ $(document).ready(function () {
                 cart_id: cart_id
             },
             success: function (data) {
-                console.log(data);
-                //chek if data is an array of objects
-                if (data.length > 0) {
-                    //data is an array of objects, find the product that was just added to the cart
-                    console.log('data is not empty');
-                    const idToFind = id;
-                    const product = findProductById(data, idToFind)['name'];
-                    const subtotal = JSON.parse(data).reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(3);
+                try {
+                    const jsonData = JSON.parse(data);
 
-                    swal({
-                        title: "Exito!",
-                        text: `${product} ha sido agregado al carrito. Subtotal: CRC ${subtotal}.`,
-                        icon: "success",
-                        button: "OK",
-                    });
-                    //fetchCartData();
-                    return true;
-                } if (data.length === 0) {
-                    //data is an object
-                    console.log('data is empty');
-                    const product = 'producto';
-                    const subtotal = "0.00";
+                    // Check if jsonData is an array of objects
+                    if (Array.isArray(jsonData) && jsonData.length > 0) {
+                        console.log('data is not empty');
+                        const idToFind = id;
+                        const product = findProductById(jsonData, idToFind);
+                        if (product !== null) {
+                            const productName = product['name'];
+                            const subtotal = jsonData.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(3);
 
-                    swal({
-                        title: "Exito!",
-                        text: `${product} ha sido agregado al carrito. Subtotal: CRC ${subtotal}.`,
-                        icon: "success",
-                        button: "OK",
-                    });
-                    return true;
-                } else {
-                    swal({
-                        title: "Error!",
-                        text: `Ha ocurrido un error al agregar el producto al carrito. Intente nuevamente.`,
-                        icon: "error",
-                        button: "OK",
-                    });
+                            swal({
+                                title: "Exito!",
+                                text: `${productName} ha sido agregado al carrito. Subtotal: CRC ${subtotal}.`,
+                                icon: "success",
+                                button: "OK",
+                            });
+                            //fetchCartData();
+                            return true;
+                        } else {
+                            console.log('Product not found in the cart.');
+                            // Resto del código para manejar el caso en que el producto no se encuentra en el carrito
+                        }
+                    } else if (jsonData.status === 'fail') {
+                        console.log('data is empty');
+                        // Resto del código para mostrar el mensaje de fallo
+                    } else {
+                        // Otra lógica para manejar otros escenarios
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON: ', error);
+                    // Resto del código para manejar otros escenarios en caso de error
                 }
             },
             error: function (data) {
@@ -60,21 +55,25 @@ $(document).ready(function () {
 });
 
 function findProductById(data, id) {
-    let product;
-    for (let i = 0; i < data.length; i++) {
-
-
-        product = JSON.parse(data);
-        console.log('product', product);
-        console.log('id', id.toString());
-        if (product[i]['product_id'] == id.toString()) {
-            console.log('product', product[i]);
-            return product[i];
+    if (Array.isArray(data)) {
+        for (let i = 0; i < data.length; i++) {
+            const product = data[i];
+            console.log('product', product);
+            console.log('id', id.toString());
+            if (product['product_id'] == id.toString()) {
+                console.log('product', product);
+                return product;
+            }
         }
+    } else if (data.status === 'fail') {
+        console.log('Failed to add the product to the cart.');
+        return null; // Return null or any other value to indicate failure
     }
 
-    // return null; // Return null if the product is not found
+    return null; // Return null if the product is not found
 }
+
+
 //ver detalles del producto(navegar hacia la pagina del producto)
 $(document).ready(function () {
     $('#detalles').click(function () {

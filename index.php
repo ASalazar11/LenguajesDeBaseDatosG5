@@ -36,6 +36,16 @@
 
 <body>
     <?php
+    session_start(); // Iniciar la sesión (si aún no está iniciada)
+
+    // ... Código de tu aplicación ...
+    
+    // Para "resetear" la sesión:
+    session_destroy(); // Eliminar todas las variables de sesión y liberar los recursos
+    
+    // Iniciar una nueva sesión:
+    session_start(); 
+    
     include 'components/preNavbar/index.php';
     ?>
 
