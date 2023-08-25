@@ -71,3 +71,4 @@ function findProductByName(data, name) {
 // Fetch the cart data every 500 mili seconds
 setInterval(fetchCartData, 500);
 
+z

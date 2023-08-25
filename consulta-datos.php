@@ -82,6 +82,10 @@ function ImprimirDatos($datos)
     echo '</tr>';
     echo '</thead>';
 
+    if (!oci_fetch($datos)) {
+        echo '<tr><td colspan="6">No hay datos</td></tr>';
+    }
+
     while (($row = oci_fetch_assoc($datos)) !== false) {
         echo '<tr class="contenido">';
         echo '<td>' . $row['NOMBRE'] . '</td>';
@@ -89,13 +93,11 @@ function ImprimirDatos($datos)
         echo '<td>' . $row['CORREO'] . '</td>';
         echo '<td>' . $row['CIUDAD'] . '</td>';
         echo "<td style='max-width: 200px; word-wrap: break-word; word-break: break-all;'>{$row['MENSAJE']}</td>";
-        echo '<td><a class="btn btn-danger btn-rounded btn-sm fw-bold"
-          data-mdb-ripple-color="black" href="php2/elimina-formulario.php?id=' . $row['CONTACTENOS_ID'] . '">Eliminar</a></td>';
-        echo '</tr>';
-    }
-
-    if (!oci_fetch($datos)) {
-        echo '<tr><td colspan="6">No hay datos</td></tr>';
+        echo '<td><a class="btn btn-success btn-rounded btn-sm fw-bold"
+      data-mdb-ripple-color="black" href="Actualizar_contactenos.php?id=' . $row['CONTACTENOS_ID'] . '">Actualizar</a></td>';
+    echo '<td><a class="btn btn-danger btn-rounded btn-sm fw-bold"
+      data-mdb-ripple-color="black" href="php2/elimina-formulario.php?id=' . $row['CONTACTENOS_ID'] . '">Eliminar</a></td>';
+    echo '</tr>';
     }
 
     echo '</table>';
@@ -149,6 +151,10 @@ function ImprimirDatosFactura($datos)
     echo '</tr>';
     echo '</thead>';
 
+    if (!oci_fetch($datos)) {
+        echo '<tr><td colspan="8">No hay datos</td></tr>';
+    }
+
     while (($row = oci_fetch_assoc($datos)) !== false) {
         echo '<tr class="contenido">';
         echo '<td>' . $row['NOMBRE'] . '</td>';
@@ -158,19 +164,145 @@ function ImprimirDatosFactura($datos)
         echo '<td>' . $row['TARJETA'] . '</td>';
         echo '<td>' . $row['CODIGO'] . '</td>';
         echo '<td>' . $row['TOTAL'] . '</td>';
+        echo '<td><a class="btn btn-success btn-rounded btn-sm fw-bold"
+      data-mdb-ripple-color="black" href="Actualizar_factura.php?id=' . $row['FACTURA_ID'] . '">Actualizar</a></td>';
         echo '<td><a class="btn btn-danger btn-rounded btn-sm fw-bold"
             data-mdb-ripple-color="black" href="php2/elimina-formulario-factura.php?id=' . $row['FACTURA_ID'] . '">Eliminar</a></td>';
         echo '</tr>';
     }
 
+    
+
+    echo '</table>';
+    echo '</div>';
+}
+?>
+
+
+
+<h1 class="titulo">Datos de Usuarios</h1>
+
+<?php
+// 1. Establecer la conexión con el motor de base de datos Oracle.
+$conn = Conecta();
+
+if (!$conn) {
+    $e = oci_error();
+    echo "Ocurrió un error al establecer la conexión: {$e['message']}";
+}
+
+// 2. Ejecutar la consulta para obtener los datos de la tabla users.
+$query = "SELECT user_id, username, email FROM users";
+$statement = oci_parse($conn, $query);
+oci_execute($statement);
+
+if ($e = oci_error($statement)) {
+    echo "Ocurrió un error al ejecutar la consulta: {$e['message']}";
+}
+
+// 3. Mostrar los resultados de la consulta.
+ImprimirDatosUsuarios($statement);
+
+// 4. Cerrar la conexión.
+oci_free_statement($statement);
+oci_close($conn);
+
+function ImprimirDatosUsuarios($datos)
+{
+    echo '<div class="container">';
+    echo '<table class="table align-middle mb-0 bg-white">';
+    echo '<thead class="bg-light">';
+    echo '<tr>';
+    echo '<th>ID</th>';
+    echo '<th>Nombre de Usuario</th>';
+    echo '<th>Correo Electrónico</th>';
+    echo '</tr>';
+    echo '</thead>';
+
     if (!oci_fetch($datos)) {
-        echo '<tr><td colspan="8">No hay datos</td></tr>';
+        echo '<tr><td colspan="3">No hay datos</td></tr>';
+    }
+
+    while (($row = oci_fetch_assoc($datos)) !== false) {
+        echo '<tr class="contenido">';
+        echo '<td>' . $row['USER_ID'] . '</td>';
+        echo '<td>' . $row['USERNAME'] . '</td>';
+        echo '<td>' . $row['EMAIL'] . '</td>';
+        echo '<td><a class="btn btn-success btn-rounded btn-sm fw-bold"
+      data-mdb-ripple-color="black" href="Actualizar_usuarios.php?id=' . $row['USER_ID'] . '">Actualizar</a></td>';
+        echo '<td><a class="btn btn-danger btn-rounded btn-sm fw-bold"
+            data-mdb-ripple-color="black" href="php2/elimina-formulario-usuario.php?id=' . $row['USER_ID'] . '">Eliminar</a></td>';
+        echo '</tr>';
     }
 
     echo '</table>';
     echo '</div>';
 }
 ?>
+
+<h1 class="titulo">Datos de Productos</h1>
+
+<?php
+// 1. Establecer la conexión con el motor de base de datos Oracle.
+$conn = Conecta();
+
+if (!$conn) {
+    $e = oci_error();
+    echo "Ocurrió un error al establecer la conexión: {$e['message']}";
+}
+
+// 2. Ejecutar la consulta para obtener los datos de la tabla products.
+$query = "SELECT product_id, name, description, price FROM products";
+$statement = oci_parse($conn, $query);
+oci_execute($statement);
+
+if ($e = oci_error($statement)) {
+    echo "Ocurrió un error al ejecutar la consulta: {$e['message']}";
+}
+
+// 3. Mostrar los resultados de la consulta.
+ImprimirDatosProductos($statement);
+
+// 4. Cerrar la conexión.
+oci_free_statement($statement);
+oci_close($conn);
+
+function ImprimirDatosProductos($datos)
+{
+    echo '<div class="container">';
+    echo '<table class="table align-middle mb-0 bg-white">';
+    echo '<thead class="bg-light">';
+    echo '<tr>';
+    echo '<th>ID de Producto</th>';
+    echo '<th>Nombre</th>';
+    echo '<th>Descripción</th>';
+    echo '<th>Precio</th>';
+    echo '</tr>';
+    echo '</thead>';
+
+    if (!oci_fetch($datos)) {
+        echo '<tr><td colspan="4">No hay datos</td></tr>';
+    }
+
+    while (($row = oci_fetch_assoc($datos)) !== false) {
+        echo '<tr class="contenido">';
+        echo '<td>' . $row['PRODUCT_ID'] . '</td>';
+        echo '<td>' . $row['NAME'] . '</td>';
+        echo '<td>' . $row['DESCRIPTION'] . '</td>';
+        echo '<td>' . $row['PRICE'] . '</td>';
+        echo '<td><a class="btn btn-success btn-rounded btn-sm fw-bold"
+      data-mdb-ripple-color="black" href="Actualizar_productos.php?id=' . $row['PRODUCT_ID'] . '">Actualizar</a></td>';
+        echo '<td><a class="btn btn-danger btn-rounded btn-sm fw-bold"
+            data-mdb-ripple-color="black" href="php2/elimina-formulario-producto.php?id=' . $row['PRODUCT_ID'] . '">Eliminar</a></td>';
+        echo '</tr>';
+    }
+
+    echo '</table>';
+    echo '</div>';
+}
+?>
+
+
 
 
 </body>

@@ -26,7 +26,7 @@ $apellidosOK = true;
 if ( $nombreOK && $apellidosOK ) {
     session_start();
     require_once '../DAL/Datos1.php';
-    if ( Ingresa( $nombre, $apellidos, $correo, $ciudad, $mensaje ) ) {
+    if ( InsertaContacto( $nombre, $apellidos, $correo, $ciudad, $mensaje ) ) {
 
         $cart = null;
 
@@ -36,13 +36,14 @@ if ( $nombreOK && $apellidosOK ) {
             $cart = $_SESSION[ 'cart' ];
         }
 
-        $cart_id = $cart[ 'cart_id' ];
+        $cart_id = $cart;
 
         // El identificador del carrito que deseas eliminar
         $result = deleteCartItems( $cart_id );
 
         if ( $result ) {
             echo 'El carrito se ha eliminado correctamente.';
+            header( 'Location: ../home.php' );
         } else {
             echo 'Error al eliminar el carrito.';
         }

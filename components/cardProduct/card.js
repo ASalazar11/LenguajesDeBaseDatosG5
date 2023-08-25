@@ -23,13 +23,6 @@ $(document).ready(function () {
                         if (product !== null) {
                             const productName = product['name'];
                             const subtotal = jsonData.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(3);
-
-                            swal({
-                                title: "Exito!",
-                                text: `${productName} ha sido agregado al carrito. Subtotal: CRC ${subtotal}.`,
-                                icon: "success",
-                                button: "OK",
-                            });
                             //fetchCartData();
                             return true;
                         } else {

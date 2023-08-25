@@ -30,7 +30,7 @@
 
                                     <div class="d-flex align-items-center mb-3 pb-1">
                                         <img src="assets/logo-icon-black.png" alt="logo" style="width: 2em; height: 2em;" />
-                                        <span class="h2 fw-bold mb-0">Whycux</span>
+                                        <span class="h2 fw-bold mb-0">SHOP</span>
                                     </div>
 
                                     <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Crea una cuenta</h5>

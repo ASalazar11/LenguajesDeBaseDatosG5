@@ -4,17 +4,11 @@ function createItem($cart_id, $product_id, $quantity, $connection)
 {
     $response = false;
 
-    // Obtener el siguiente valor de la secuencia para CART_ITEM_ID
-    $stmt = oci_parse($connection, "SELECT cart_items_seq.NEXTVAL FROM DUAL");
-    oci_execute($stmt);
-    oci_fetch($stmt);
-    $cart_item_id = oci_result($stmt, 1);
-    oci_free_statement($stmt);
-
-    $query = "INSERT INTO cart_items (cart_item_id, cart_id, product_id, quantity) 
-              VALUES (:cart_item_id, :cart_id, :product_id, :quantity)";
+    $query = "BEGIN
+                INSERT_CART_ITEM(:cart_id, :product_id, :quantity);
+              END;";
+              
     $stmt = oci_parse($connection, $query);
-    oci_bind_by_name($stmt, ':cart_item_id', $cart_item_id);
     oci_bind_by_name($stmt, ':cart_id', $cart_id);
     oci_bind_by_name($stmt, ':product_id', $product_id);
     oci_bind_by_name($stmt, ':quantity', $quantity);
@@ -32,30 +26,32 @@ function createItem($cart_id, $product_id, $quantity, $connection)
 }
 
 
+
 function updateItem($cart_id, $product_id, $quantity, $connection)
 {
-    $query = "UPDATE cart_items SET quantity = :quantity WHERE cart_id = :cart_id AND product_id = :product_id";
-    $stmt = oci_parse($connection, $query);
-    oci_bind_by_name($stmt, ':quantity', $quantity);
+    $stmt = oci_parse($connection, "BEGIN update_cart_item(:cart_id, :product_id, :quantity, :result); END;");
+
     oci_bind_by_name($stmt, ':cart_id', $cart_id);
     oci_bind_by_name($stmt, ':product_id', $product_id);
+    oci_bind_by_name($stmt, ':quantity', $quantity);
+    oci_bind_by_name($stmt, ':result', $rowsAffected, 10); // Número de filas afectadas
 
     $response = oci_execute($stmt);
 
     if ($response) {
-        $rowsAffected = oci_num_rows($stmt);
         if ($rowsAffected > 0) {
-            oci_commit($connection); // Commit the transaction to make sure the update is applied.
-            return true; // Se actualizó correctamente.
+            oci_commit($connection);
+            return true;
         } else {
-            return false; // No se encontró el elemento con los valores proporcionados.
+            return false;
         }
     } else {
         $error = oci_error($stmt);
         echo "Error: " . $error['message'];
-        return false; // Ocurrió un error al ejecutar la consulta.
+        return false;
     }
 }
+
 
 
 
@@ -64,20 +60,28 @@ function getAllCartItemsByCartId($cart_id)
     $response = false;
     $connection = Conecta();
     
-    $query = "SELECT products.product_id, products.name, products.description, products.price, cart_items.quantity
-              FROM cart_items
-              JOIN products ON cart_items.product_id = products.product_id
-              WHERE cart_items.cart_id = :cart_id";
+    // Preparar la llamada al procedimiento almacenado
+    $query = "BEGIN
+    GetCartItemsByCartId(:cart_id, :result_cursor);
+              END;";
     $stmt = oci_parse($connection, $query);
+    
+    // Variables de enlace para el procedimiento almacenado
+    $result_cursor = oci_new_cursor($connection);
+    
     oci_bind_by_name($stmt, ':cart_id', $cart_id);
+    oci_bind_by_name($stmt, ':result_cursor', $result_cursor, -1, OCI_B_CURSOR);
 
     $response = oci_execute($stmt);
+    
+    // Ejecutar el cursor
+    oci_execute($result_cursor);
 
-    //items array of the cart
+    //items array del carrito
     $rows = array();
 
     if ($response) {
-        while ($row = oci_fetch_assoc($stmt)) {
+        while ($row = oci_fetch_assoc($result_cursor)) {
             $new_row = $row;
             array_push($rows, $new_row);
         }
@@ -87,8 +91,10 @@ function getAllCartItemsByCartId($cart_id)
     }
 
     oci_free_statement($stmt);
+    oci_free_statement($result_cursor);
     oci_close($connection);
 
     return $rows;
 }
+
 

@@ -1,53 +1,123 @@
 <?php
 
-require_once "connection.php";
+require_once 'connection.php';
 
-function Ingresa($pNombre, $papellidos, $pcorreo, $pciudad, $pmensaje)
+function getAllCategories()
+ {
+    $response = false;
+    $conn = Conecta();
+
+    // Utilizar una consulta SQL para obtener todas las categorías directamente desde la vista
+    $sql = 'SELECT * FROM categories_view';
+    // Reemplaza 'categories_view' con el nombre real de tu vista
+    $stmt = oci_parse( $conn, $sql );
+
+    // Ejecutar la consulta preparada
+    oci_execute( $stmt );
+
+    // Obtener el resultado de la consulta
+    $rows = array();
+    while ( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ) {
+        $rows[] = $row;
+    }
+
+    // Verificar si se encontraron categorías
+    if ( !empty( $rows ) ) {
+        $response = $rows;
+    }
+
+    // Liberar la consulta y desconectar
+    oci_free_statement( $stmt );
+    Desconecta( $conn );
+
+    return $response;
+}
+
+function getProductsByCategory( $category_id )
+ {
+    $response = false;
+    $conn = Conecta();
+
+    // Utilizar una consulta SQL para obtener productos por categoría directamente desde la vista
+    $sql = 'SELECT * FROM products_by_category_view WHERE category_id = :category_id';
+    // Reemplaza 'products_by_category_view' con el nombre real de tu vista
+    $stmt = oci_parse( $conn, $sql );
+
+    // Vincular el valor del parámetro de categoría
+    oci_bind_by_name( $stmt, ':category_id', $category_id );
+
+    // Ejecutar la consulta preparada
+    oci_execute( $stmt );
+
+    // Obtener el resultado de la consulta
+    $rows = array();
+    while ( $row = oci_fetch_array( $stmt, OCI_ASSOC ) ) {
+        $rows[] = $row;
+    }
+
+    // Verificar si se encontraron productos
+    if ( !empty( $rows ) ) {
+        $response = $rows;
+    }
+
+    // Liberar la consulta y desconectar
+    oci_free_statement( $stmt );
+    Desconecta( $conn );
+
+    return $response;
+}
+
+function EliminarContacto($idDato)
 {
     $retorno = false;
-    $conexion = Conecta();
+    $conexion = conecta();  // Supongo que tienes una función llamada conecta() para establecer la conexión
 
-    //formato de datos utf8
-    if(mysqli_set_charset($conexion, "utf8")){
-        $stmt = $conexion->prepare("Insert into contactenos(nombre, apellidos, correo, ciudad, mensaje) values (?,?,?,?,?)");
-        $stmt->bind_param("sssss", $iNombre, $iapellidos, $pcorreo, $pciudad, $pmensaje);
+    if ($conexion) {
+        $query = "BEGIN EliminaContacto(:pIdDato); END;";
+        $stmt = oci_parse($conexion, $query);
 
-        //set parametros y ejecutar
-        $iNombre = $pNombre;
-        $iapellidos = $papellidos;
-        $icorreo = $pcorreo;
-        $iciudad = $pciudad;
-        $imensaje = $pmensaje;
+        oci_bind_by_name($stmt, ":pIdDato", $idDato);
 
-        if($stmt->execute()){
+        if (oci_execute($stmt)) {
             $retorno = true;
         }
+        oci_free_statement($stmt);
+        oci_close($conexion);
     }
-    Desconecta($conexion);
 
     return $retorno;
 }
 
-function Eliminar($iddato)
+
+
+function InsertaContacto($pNombre, $pApellidos, $pCorreo, $pCiudad, $pMensaje)
 {
     $retorno = false;
-    $conexion = Conecta();
+    $conexion = conecta(); // Assuming you have a function named 'conecta' that establishes a database connection.
 
-    //formato de datos utf8
-    if(mysqli_set_charset($conexion, "utf8")){
-        $stmt = $conexion->prepare("delete from contactenos WHERE contactenos_id = ?");
-        $stmt->bind_param("i", $id);
+    if ($conexion) {
+        $query = "BEGIN InsertaContacto(:pNombre, :pApellidos, :pCorreo, :pCiudad, :pMensaje); END;";
+        $stmt = oci_parse($conexion, $query);
 
-        //set parametros y ejecutar
-        $id = $iddato;
+        oci_bind_by_name($stmt, ":pNombre", $pNombre);
+        oci_bind_by_name($stmt, ":pApellidos", $pApellidos);
+        oci_bind_by_name($stmt, ":pCorreo", $pCorreo);
+        oci_bind_by_name($stmt, ":pCiudad", $pCiudad);
+        oci_bind_by_name($stmt, ":pMensaje", $pMensaje);
 
-        if($stmt->execute()){
+        if (oci_execute($stmt)) {
             $retorno = true;
+            oci_commit($conexion); // Commit the transaction if the execution was successful.
+        } else {
+            oci_rollback($conexion); // Rollback the transaction if there was an error.
         }
+
+        oci_free_statement($stmt);
+        oci_close($conexion);
     }
-    Desconecta($conexion);
 
     return $retorno;
 }
+
 
 ?>

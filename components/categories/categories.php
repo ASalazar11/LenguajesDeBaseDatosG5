@@ -16,12 +16,12 @@
                             if (count($categories) > 0) {
                                 foreach ($categories as $row) {
                                     echo "<a id='categories_links'
-                                        style='background-color: #42465A' href='http://localhost/whycux/products.php?category_id={$row['CATEGORY_ID']}' class='list-group-item'
+                                        style='background-color: #42465A' href='http://localhost/tienda/products.php?category_id={$row['CATEGORY_ID']}' class='list-group-item'
                                         data-category-id='{$row['CATEGORY_ID']}'
                                         >{$row['NAME']} </a>";
                                 }
                                 echo "<a id='categories_links'
-                                    style='background-color: #42465A' href='http://localhost/whycux/products.php' class='list-group-item'
+                                    style='background-color: #42465A' href='http://localhost/tienda/products.php' class='list-group-item'
                                     data-category-id='0'
                                     >Todas las categorias </a>";
                             } else {

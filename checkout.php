@@ -65,6 +65,7 @@
                     echo "<div class='cvp'>";
                     echo "<h5 class='card-title'>{$row['NAME']}</h5>";
                     echo "<p class='card-text'>$ {$row['PRICE']}</p>";
+                    // echo "<button class='btn btn-danger delete-product' data-product-id='{$row['PRODUCT_ID']}'><i class='fas fa-trash'></i></button>";
                     echo "</div>";
                     echo "</div>";
                     echo "</div>";

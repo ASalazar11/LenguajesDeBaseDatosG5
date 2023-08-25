@@ -2,6 +2,39 @@
 <link rel="stylesheet" type="text/css" href="components/navbar/navbar.css">
 <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="css/pimagen1.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const botonesAgregarCarrito = document.querySelectorAll(".cart");
+
+        botonesAgregarCarrito.forEach(boton => {
+            boton.addEventListener("click", function () {
+                const idProducto = boton.getAttribute("data-id");
+                const idCarrito = boton.getAttribute("data-cart_id");
+
+                // Aquí puedes personalizar el mensaje de confirmación según necesites
+                swal({
+                    title: "Producto agregado al carrito",
+                    text: "El producto ha sido agregado al carrito correctamente.",
+                    icon: "success",
+                    buttons: {
+                        confirm: "Ir al carrito",
+                        cancel: "Seguir comprando"
+                    },
+                }).then((valor) => {
+                    if (valor) {
+                        // Redirige a la página del carrito u realiza cualquier otra acción deseada
+                        window.location.href = "checkout.php"; // Reemplaza con la URL real de tu página de carrito
+                    }
+                });
+
+                // Aquí puedes agregar lógica para actualizar el carrito en segundo plano
+                // utilizando AJAX u otros métodos
+            });
+        });
+    });
+</script>
+
 <?php
 require_once 'DAL/products.php';
 require_once 'DAL/cart.php';
@@ -40,7 +73,7 @@ if (!empty($products)) {
         echo "          <h5 class='card-title font-weight-bold'>{$row['NAME']}</h5>";
         echo "      <p class='card-text'>$ {$row['PRICE']}</p>";
         echo "       <a href='single_product.php?id={$row['PRODUCT_ID']}' data-id='{$row['PRODUCT_ID']}' class='btn details px-auto' style='background-color: #42465A; color: white;'>ver detalles</a><br />";
-        echo "        <button class='btn cart px-auto' data-id='{$row['PRODUCT_ID']}' data-cart_id='$cart_id'>AGREGAR EN EL CARRITO</button>";
+        echo "        <button class='btn cart px-auto' data-id='{$row['PRODUCT_ID']}' data-cart_id='$cart_id'>AGREGAR EN EL CARRITO</button>        ";
         echo "     </div>";
         echo "  </div>";
         echo "  </div>";

@@ -8,8 +8,9 @@ $apellidos = recogePost('apellidos');
 $correo = recogePost('correo');
 $ciudad = recogePost('ciudad');
 $tarjeta = recogePost('tarjeta'); // Agrega el campo "tarjeta"
-$codigo = recogePost('codigo'); // Agrega el campo "codigo"
-$total = recogePost('total'); // Agrega el campo "total"
+$codigo = floatval(recogePost('codigo'));
+$total = floatval(recogePost('total'));
+
 
 $nombreOK = false;
 $apellidosOK = true; // No parece haber validación para apellidos en tu código original
@@ -21,8 +22,6 @@ if ($nombre === '') {
 } else {
     $nombreOK = true;
 }
-
-// Aquí deberías agregar la validación para los otros campos (tarjeta, codigo, total) si es necesario
 
 if ($nombreOK && $apellidosOK) {
     session_start();
@@ -44,7 +43,7 @@ if ($nombreOK && $apellidosOK) {
 
         if ($result) {
             echo 'El carrito se ha eliminado correctamente.';
-            header('Location: ../home.php');
+            header('Location: ../Factura_Pdf.php');
         } else {
             echo 'Error al eliminar el carrito.';
         }

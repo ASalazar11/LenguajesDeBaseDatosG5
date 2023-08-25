@@ -8,7 +8,7 @@ $(document).ready(function () {
             type: 'GET',
             success: function (response) {
                 // Replace the product list with the new content returned by the server
-                windows.location.href = 'http://localhost/whycux/' + url;
+                windows.location.href = 'http://localhost/tienda/' + url;
                 console.log('success');
             },
             error: function (xhr, status, error) {

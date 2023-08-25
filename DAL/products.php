@@ -42,24 +42,21 @@ function getProductById($id)
     $response = false;
     $connection = Conecta();
 
-    $query = "SELECT * FROM products WHERE product_id = :id";
+    // Preparar la llamada al procedimiento almacenado
+    $query = "BEGIN GetProductByIdProc(:id, :cursor); END;";
     $statement = oci_parse($connection, $query);
+
     oci_bind_by_name($statement, ":id", $id);
+    $cursor = oci_new_cursor($connection);
+    oci_bind_by_name($statement, ":cursor", $cursor, -1, OCI_B_CURSOR);
+
     oci_execute($statement);
+    oci_execute($cursor);
 
-    $response = array(); // Initialize the response array
+    $response = array();
 
-    if (($row = oci_fetch_array($statement, OCI_ASSOC + OCI_NUM)) !== false) {
-        // Convert the Oracle associative array to a regular associative array
-        $row_assoc = array();
-        foreach ($row as $key => $value) {
-            // Remove the numeric indexes from the Oracle result
-            if (is_string($key)) {
-                $row_assoc[$key] = $value;
-            }
-        }
-
-        $response[] = $row_assoc; // Add the converted row to the response array
+    if (($row = oci_fetch_assoc($cursor)) !== false) {
+        $response[] = $row;
     } else {
         $error = oci_error($statement);
         echo $error['message'];
@@ -70,18 +67,23 @@ function getProductById($id)
     return $response;
 }
 
-
 function filterProductsByName($name)
 {
-    $response =  false;
+    $response = false;
     $connection = Conecta();
 
-    $query = "SELECT * FROM products WHERE name LIKE '%' || :name || '%' AND ROWNUM <= 1";
+    // Preparar la llamada al procedimiento almacenado
+    $query = "BEGIN FilterProductsByNameProc(:name, :cursor); END;";
     $statement = oci_parse($connection, $query);
-    oci_bind_by_name($statement, ":name", $name);
-    oci_execute($statement);
 
-    if (($row = oci_fetch_assoc($statement)) !== false) {
+    oci_bind_by_name($statement, ":name", $name);
+    $cursor = oci_new_cursor($connection);
+    oci_bind_by_name($statement, ":cursor", $cursor, -1, OCI_B_CURSOR);
+
+    oci_execute($statement);
+    oci_execute($cursor);
+
+    if (($row = oci_fetch_assoc($cursor)) !== false) {
         $response = $row;
     } else {
         $error = oci_error($statement);
@@ -95,26 +97,52 @@ function filterProductsByName($name)
 
 function getProductsByCartId($id)
 {
-    $response =  false;
+    $response = false;
     $connection = Conecta();
 
-    $query = "SELECT products.*
-    FROM products
-    JOIN cart_items ON cart_items.product_id = products.product_id
-    WHERE cart_items.cart_id = :id";
+    // Preparar la llamada al procedimiento almacenado
+    $query = "BEGIN GetProductsByCartIdProc(:id, :cursor); END;";
     $statement = oci_parse($connection, $query);
+
     oci_bind_by_name($statement, ":id", $id);
+    $cursor = oci_new_cursor($connection);
+    oci_bind_by_name($statement, ":cursor", $cursor, -1, OCI_B_CURSOR);
+
     oci_execute($statement);
+    oci_execute($cursor);
 
     $rows = array();
 
-    while ($row = oci_fetch_assoc($statement)) {
+    while (($row = oci_fetch_assoc($cursor)) !== false) {
         $rows[] = $row;
     }
 
     Desconecta($connection);
     return $rows;
 }
+
+
+function EliminarProducto($idDato)
+{
+    $retorno = false;
+    $conexion = conecta();
+
+    if ($conexion) {
+        $query = "BEGIN EliminaProducto(:pProductoId); END;";
+        $stmt = oci_parse($conexion, $query);
+
+        oci_bind_by_name($stmt, ":pProductoId", $idDato);
+
+        if (oci_execute($stmt)) {
+            $retorno = true;
+        }
+        oci_free_statement($stmt);
+        oci_close($conexion);
+    }
+
+    return $retorno;
+}
+
 
 
 

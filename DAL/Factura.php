@@ -4,58 +4,50 @@ require_once "connection.php";
 function IngresaFactura($pNombre, $pApellidos, $pCorreo, $pCiudad, $pTarjeta, $pCodigo, $pTotal)
 {
     $retorno = false;
-    $conexion = Conecta(); // Usar la función de conexión para Oracle
+    $conexion = conecta();
 
-    // Convertir el valor de código a número
-    $codigoNumerico = intval($pCodigo);
+    if ($conexion) {
+        $query = "BEGIN IngresaFactura(:pNombre, :pApellidos, :pCorreo, :pCiudad, :pTarjeta, :pCodigo, :pTotal); END;";
+        $stmt = oci_parse($conexion, $query);
 
-    // Convertir el valor de total a número decimal
-    $totalDecimal = floatval($pTotal);
+        oci_bind_by_name($stmt, ":pNombre", $pNombre);
+        oci_bind_by_name($stmt, ":pApellidos", $pApellidos);
+        oci_bind_by_name($stmt, ":pCorreo", $pCorreo);
+        oci_bind_by_name($stmt, ":pCiudad", $pCiudad);
+        oci_bind_by_name($stmt, ":pTarjeta", $pTarjeta);
+        oci_bind_by_name($stmt, ":pCodigo", $pCodigo);
+        oci_bind_by_name($stmt, ":pTotal", $pTotal);
 
-    $stmt = oci_parse($conexion, "INSERT INTO factura(nombre, apellidos, correo, ciudad, tarjeta, codigo, total) VALUES (:nombre, :apellidos, :correo, :ciudad, :tarjeta, :codigo, :total)");
-
-    // Crear variables para enlazar los valores
-    $nombre = $pNombre;
-    $apellidos = $pApellidos;
-    $correo = $pCorreo;
-    $ciudad = $pCiudad;
-    $tarjeta = $pTarjeta;
-    $codigo = $codigoNumerico; // Usar el valor convertido a número
-    $total = $totalDecimal; // Usar el valor convertido a número decimal
-    
-    oci_bind_by_name($stmt, ":nombre", $nombre);
-    oci_bind_by_name($stmt, ":apellidos", $apellidos);
-    oci_bind_by_name($stmt, ":correo", $correo);
-    oci_bind_by_name($stmt, ":ciudad", $ciudad);
-    oci_bind_by_name($stmt, ":tarjeta", $tarjeta);
-    oci_bind_by_name($stmt, ":codigo", $codigo);
-    oci_bind_by_name($stmt, ":total", $total);
-    
-    if (oci_execute($stmt)) {
-        $retorno = true;
+        if (oci_execute($stmt)) {
+            $retorno = true;
+        }
+        oci_free_statement($stmt);
+        oci_close($conexion);
     }
-    
-    oci_free_statement($stmt);
-    Desconecta($conexion);
 
     return $retorno;
 }
+
 
 function EliminarFactura($idDato)
 {
     $retorno = false;
-    $conexion = Conecta(); // Usar la función de conexión para Oracle
+    $conexion = conecta();
 
-    $stmt = oci_parse($conexion, "DELETE FROM factura WHERE factura_id = :id");
-    oci_bind_by_name($stmt, ":id", $idDato);
-    
-    if (oci_execute($stmt)) {
-        $retorno = true;
+    if ($conexion) {
+        $query = "BEGIN EliminaFactura(:pIdDato); END;";
+        $stmt = oci_parse($conexion, $query);
+
+        oci_bind_by_name($stmt, ":pIdDato", $idDato);
+
+        if (oci_execute($stmt)) {
+            $retorno = true;
+        }
+        oci_free_statement($stmt);
+        oci_close($conexion);
     }
-    
-    oci_free_statement($stmt);
-    Desconecta($conexion);
 
     return $retorno;
 }
+
 ?>

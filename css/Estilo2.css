@@ -8,6 +8,14 @@
     background-color: rgb(57, 102, 100);
   }
 
+  .titulo2 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    background-color: rgb(57, 102, 100);
+  }
+
   .top {
     margin-top: 100px;
   }
@@ -31,5 +39,5 @@
   }
 
   body {
-    background-color: bisque;
+    background-color: rgb(235, 235, 235);
   }

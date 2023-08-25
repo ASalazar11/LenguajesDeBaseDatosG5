@@ -13,6 +13,7 @@ require_once 'cart_item.php';
  * 
  * @return The result of the query.
  */
+
 function addToCart($cart_id, $product_id, $quantity)
 {
     $response = false;
@@ -49,13 +50,13 @@ function createCart($user_id)
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
     }
 
-    $stmt = oci_parse($connection, "INSERT INTO carts (cart_id, user_id) VALUES (carts_seq.NEXTVAL, :user_id)");
+    $stmt = oci_parse($connection, "BEGIN create_cart_proc(:user_id, :cart_id); END;");
     oci_bind_by_name($stmt, ':user_id', $user_id);
+    oci_bind_by_name($stmt, ':cart_id', $cartId, 32); // Assuming the ID won't exceed 32 characters.
 
     $response = oci_execute($stmt);
 
     if ($response) {
-        $cartId = getLastInsertedId($connection);
         oci_commit($connection); // Commit the transaction to make sure the data is persisted.
         $_SESSION['cart'] = $cartId; // Store cart_id directly in the session.
     }
@@ -65,19 +66,6 @@ function createCart($user_id)
 
     return $cartId; // Return the cart_id directly.
 }
-
-
-
-function getLastInsertedId($connection)
-{
-    $stmt = oci_parse($connection, "SELECT carts_seq.CURRVAL FROM DUAL");
-    oci_execute($stmt);
-    oci_fetch($stmt);
-    $lastId = oci_result($stmt, 1);
-    oci_free_statement($stmt);
-    return $lastId;
-}
-
 
 /**
  * It gets the cart id of a user.
@@ -92,16 +80,16 @@ function getCartId($user_id, $cart_id)
     $response = false;
     $connection = Conecta();
 
-    $query = "SELECT cart_id FROM carts WHERE user_id = :user_id AND cart_id = :cart_id";
+    $query = "BEGIN GET_CART_ID_PROC(:user_id, :cart_id); END;";
     $stmt = oci_parse($connection, $query);
 
     oci_bind_by_name($stmt, ":user_id", $user_id);
-    oci_bind_by_name($stmt, ":cart_id", $cart_id);
+    oci_bind_by_name($stmt, ":cart_id", $cart_id, 32); // Assuming 32 is the max length of the cart_id
 
     oci_execute($stmt);
 
-    if ($row = oci_fetch_assoc($stmt)) {
-        $response = $row['CART_ID'];
+    if ($cart_id !== null) {
+        $response = $cart_id;
     }
 
     oci_free_statement($stmt);
@@ -122,7 +110,7 @@ function deleteCartItems($cart_id)
     $response = false;
     $connection = Conecta();
 
-    $query = "DELETE FROM cart_items WHERE cart_id = :cart_id";
+    $query = "BEGIN DELETE_CART_ITEMS(:cart_id); END;";
     $stmt = oci_parse($connection, $query);
 
     oci_bind_by_name($stmt, ":cart_id", $cart_id);
@@ -136,3 +124,4 @@ function deleteCartItems($cart_id)
 
     return $response;
 }
+

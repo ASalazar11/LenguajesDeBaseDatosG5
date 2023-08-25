@@ -40,6 +40,6 @@ if ($usernameOK && $emailOK && $passwordOK) {
     require_once '../DAL/user.php';
     // Si el registro es exitoso, redireccionar al usuario a la página de inicio
     if (register($username, $password, $email)) {
-        header("Location: ../home.php");
+        header("Location: ../Login.php");
     }
 }

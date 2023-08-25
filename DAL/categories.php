@@ -2,53 +2,62 @@
 require_once 'connection.php';
 
 function getAllCategories()
- {
+{
     $response = false;
     $conn = Conecta();
 
-    // Utilizar una consulta SQL para obtener todas las categorías
-    $sql = 'SELECT * FROM categories';
-    $stmt = oci_parse( $conn, $sql );
+    // Llamar al procedimiento almacenado
+    $stmt = oci_parse($conn, 'BEGIN get_all_categories_proc(:p_result); END;');
 
-    // Ejecutar la consulta preparada
-    oci_execute( $stmt );
+    // Preparar el parámetro de salida
+    $cursor = oci_new_cursor($conn);
+    oci_bind_by_name($stmt, ':p_result', $cursor, -1, OCI_B_CURSOR);
 
-    // Obtener el resultado de la consulta
+    // Ejecutar el procedimiento
+    oci_execute($stmt);
+    oci_execute($cursor); // Ejecutar el cursor
+
+    // Obtener el resultado del cursor
     $rows = array();
-    while ( $row = oci_fetch_array( $stmt, OCI_ASSOC + OCI_NUM ) ) {
+    while ($row = oci_fetch_array($cursor, OCI_ASSOC + OCI_NUM)) {
         $rows[] = $row;
     }
 
     // Verificar si se encontraron categorías
-    if ( !empty( $rows ) ) {
+    if (!empty($rows)) {
         $response = $rows;
     }
 
-    // Cerrar la consulta preparada y desconectar
-    oci_free_statement( $stmt );
-    Desconecta( $conn );
+    // Cerrar el cursor y la conexión
+    oci_free_statement($stmt);
+    oci_free_cursor($cursor);
+    Desconecta($conn);
 
     return $response;
 }
 
+
 function getProductsByCategory( $category_id )
- {
+{
     $response = false;
     $conn = Conecta();
 
-    // Utilizar una consulta SQL para obtener los productos por categoría
-    $sql = 'SELECT * FROM products WHERE category_id = :category_id';
+    // Preparar la llamada al procedimiento almacenado
+    $sql = 'BEGIN GetProductsByCategoryProc(:category_id, :cursor); END;';
     $stmt = oci_parse( $conn, $sql );
 
-    // Asociar el valor del parámetro de la categoría
+    // Asociar los parámetros
     oci_bind_by_name( $stmt, ':category_id', $category_id );
+    $cursor = oci_new_cursor($conn);
+    oci_bind_by_name( $stmt, ':cursor', $cursor, -1, OCI_B_CURSOR);
 
-    // Ejecutar la consulta preparada
+    // Ejecutar el procedimiento
     oci_execute( $stmt );
+    oci_execute( $cursor );
 
-    // Obtener el resultado de la consulta
+    // Obtener el resultado del cursor
     $rows = array();
-    while ( $row = oci_fetch_array( $stmt, OCI_ASSOC + OCI_NUM ) ) {
+    while ( $row = oci_fetch_array( $cursor, OCI_ASSOC + OCI_NUM ) ) {
         $rows[] = $row;
     }
 
@@ -57,8 +66,9 @@ function getProductsByCategory( $category_id )
         $response = $rows;
     }
 
-    // Cerrar la consulta preparada y desconectar
+    // Cerrar el cursor y desconectar
     oci_free_statement( $stmt );
+    oci_free_statement( $cursor );
     Desconecta( $conn );
 
     return $response;
