@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mensaje = $_POST['mensaje'];
 
     // Preparar la consulta de actualización
-    $query = "UPDATE contactenos SET nombre = :nombre, apellidos = :apellidos, correo = :correo, ciudad = :ciudad, mensaje = :mensaje WHERE contactenos_id = :contactenos_id";
+    $query = "BEGIN ACTUALIZAR_CONTACTO(:contactenos_id, :nombre, :apellidos, :correo, :ciudad, :mensaje); END;";
     $statement = oci_parse($conn, $query);
 
     oci_bind_by_name($statement, ":nombre", $nombre);

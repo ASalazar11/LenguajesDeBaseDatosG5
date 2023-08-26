@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Preparar la consulta de actualización
-    $query = "UPDATE factura SET nombre = :nombre, apellidos = :apellidos, correo = :correo, ciudad = :ciudad, tarjeta = :tarjeta, codigo = :codigo, total = :total WHERE factura_id = :factura_id";
+    $query = "BEGIN actualizar_factura(:factura_id, :nombre, :apellidos, :correo, :ciudad, :tarjeta, :codigo, :total); END;";
     $statement = oci_parse($conn, $query);
 
     oci_bind_by_name($statement, ":nombre", $nombre);

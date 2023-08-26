@@ -95,7 +95,6 @@
             <div class="form-outline">
             <input type="hidden" id="totalHidden" name="total" value="" />
                 <h4 class="total">Total: <span class="total-price"></span></h4>
-                <!-- Agrega el campo "total" en la página o calcula y muestra el total aquí -->
             </div>
         </div>
         <div class="col-12">

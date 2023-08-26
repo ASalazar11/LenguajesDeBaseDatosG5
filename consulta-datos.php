@@ -52,7 +52,7 @@ if (!$conn) {
 }
 
 // Execute the query to retrieve data from the "contactenos" table
-$query = "SELECT contactenos_id, nombre, apellidos, correo, ciudad, mensaje FROM contactenos";
+$query = "SELECT * FROM contactenos_vw";
 $statement = oci_parse($conn, $query);
 oci_execute($statement);
 
@@ -119,7 +119,7 @@ if (!$conn) {
 }
 
 // 2. Ejecutar la consulta para obtener los datos de la tabla factura.
-$query = "SELECT factura_id, nombre, apellidos, correo, ciudad, tarjeta, codigo, total FROM factura";
+$query = "SELECT * FROM factura_vw";
 $statement = oci_parse($conn, $query);
 oci_execute($statement);
 
@@ -192,7 +192,7 @@ if (!$conn) {
 }
 
 // 2. Ejecutar la consulta para obtener los datos de la tabla users.
-$query = "SELECT user_id, username, email FROM users";
+$query = "SELECT * FROM users_vw";
 $statement = oci_parse($conn, $query);
 oci_execute($statement);
 
@@ -252,7 +252,7 @@ if (!$conn) {
 }
 
 // 2. Ejecutar la consulta para obtener los datos de la tabla products.
-$query = "SELECT product_id, name, description, price FROM products";
+$query = "SELECT * FROM products_vw";
 $statement = oci_parse($conn, $query);
 oci_execute($statement);
 

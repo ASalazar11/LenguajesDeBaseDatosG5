@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Preparar la consulta de actualización
-    $query = "UPDATE users SET username = :username, password = :password, email = :email WHERE user_id = :user_id";
+    $query = "BEGIN actualizar_usuario(:user_id, :username, :password, :email); END;";
     $statement = oci_parse($conn, $query);
 
     oci_bind_by_name($statement, ":username", $username);

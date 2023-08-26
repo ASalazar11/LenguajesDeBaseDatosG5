@@ -1,19 +1,19 @@
 <?php
 
 require_once '../include/functions/getRequests.php';
-require_once '../DAL/cart.php'; // Asegúrate de tener tus archivos de funciones y acceso a datos
+require_once '../DAL/cart.php';
 
 $nombre = recogePost('nombre');
 $apellidos = recogePost('apellidos');
 $correo = recogePost('correo');
 $ciudad = recogePost('ciudad');
-$tarjeta = recogePost('tarjeta'); // Agrega el campo "tarjeta"
+$tarjeta = recogePost('tarjeta');
 $codigo = floatval(recogePost('codigo'));
 $total = floatval(recogePost('total'));
 
 
 $nombreOK = false;
-$apellidosOK = true; // No parece haber validación para apellidos en tu código original
+$apellidosOK = true;
 
 $errores = [];
 

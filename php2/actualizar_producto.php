@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
         // Preparar la consulta de actualización
-        $query = "UPDATE products SET name = :name, description = :description, price = :price, category_id = :category_id, image = :image WHERE product_id = :product_id";
+        $query = "BEGIN actualizar_producto(:product_id, :name, :description, :price, :category_id, :image); END;";
         $statement = oci_parse($conn, $query);
 
         oci_bind_by_name($statement, ":name", $name);

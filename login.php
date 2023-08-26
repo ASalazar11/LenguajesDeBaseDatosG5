@@ -15,14 +15,22 @@
     <script src="https://code.jquery.com/jquery-3.6.4.js"
         integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
 
+
 </head>
+
 <?php
+require_once 'DAL/cart.php';
 session_start();
 
 if (isset($_SESSION['error_message'])) {
     $error_message = $_SESSION['error_message'];
     unset($_SESSION['error_message']); // Limpiar la variable de sesión para futuros usos
 }
+$cart = $_SESSION['cart'];
+$cart_id = $cart;
+deleteCartItems($cart_id);
+
+
 ?>
 
 <section class="vh-100" style="background-color: #4361D1;">

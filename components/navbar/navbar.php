@@ -18,7 +18,7 @@
 
                     $user = $_SESSION['user'];
                     
-                    if ($user['USERNAME'] == 'john') {
+                    if ($user['EMAIL'] == 'admin@admin.com') {
                       echo '<li class="nav-item"><a class="nav-link" href="consulta-datos.php" data-abc="true">Administrar</a></li>';
                     }
                     ?>

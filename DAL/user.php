@@ -10,34 +10,36 @@ function login($email, $password)
     $response = false;
     $connection = Conecta();
 
-    // Utilizar una consulta preparada con marcadores de parámetros
-    $query = "SELECT * FROM users WHERE email = :email AND password = :password";
+    $query = "BEGIN LOGIN_PROCEDURE(:email, :password, :cursor); END;";
     $stmt = oci_parse($connection, $query);
 
-    // Asignar valores a los marcadores de parámetros
+    $cursor = oci_new_cursor($connection);
+
     oci_bind_by_name($stmt, ":email", $email);
     oci_bind_by_name($stmt, ":password", $password);
+    oci_bind_by_name($stmt, ":cursor", $cursor, -1, OCI_B_CURSOR);
 
-    // Ejecutar la consulta
     oci_execute($stmt);
+    oci_execute($cursor);
 
-    // Obtener el resultado de la consulta
-    oci_fetch_all($stmt, $result, null, null, OCI_FETCHSTATEMENT_BY_ROW);
+    $result = [];
+    oci_fetch_all($cursor, $result, null, null, OCI_FETCHSTATEMENT_BY_ROW);
 
-    // Verificar si se encontró un usuario válido
+    oci_free_statement($stmt);
+    oci_free_statement($cursor);
+
     if (count($result) > 0) {
-        $row = reset($result); // Obtener el primer resultado
+        $row = reset($result);
         $_SESSION['user'] = $row;
-        $user_id = $_SESSION['user']['USER_ID']; // Reemplaza 'USER_ID' con el nombre real de la columna
+        $user_id = $_SESSION['user']['USER_ID'];
         $response = true;
     }
 
-    // Cerrar la consulta y desconectar
-    oci_free_statement($stmt);
     Desconecta($connection);
 
     return $response;
 }
+
 
 function register($username, $password, $email)
 {
